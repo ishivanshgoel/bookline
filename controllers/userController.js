@@ -1,10 +1,15 @@
 const { createUserAccountService, createStudentDetailsService } = require("../services/userService");
 
-async function createNewUserAccount(req, res) {
+async function createNewUserAccountController(req, res, next) {
     try {
         const { userId, password } = req.body;
         let response = await createUserAccountService(userId, password);
-        return res.json(response)
+        return res.json({
+            message: "success",
+            response: {
+                userId: response["userId"]
+            }
+        })
     } catch(err) {
         return res.json({
             message: "error",
@@ -13,11 +18,14 @@ async function createNewUserAccount(req, res) {
     }
 }
 
-async function createStudentDetails(req, res) {
+async function createStudentDetailsController(req, res, next) {
     try {
         const { userId, studentId, name, dob } = req.body;
         let response =  await createStudentDetailsService(userId, studentId, name, dob);
-        return res.json(response)
+        return res.json({
+            message: "success",
+            response: response
+        })
     } catch(err) {
         return res.json({
             message: "error",
@@ -26,4 +34,4 @@ async function createStudentDetails(req, res) {
     }
 }
 
-module.exports = { createNewUserAccount, createStudentDetails }
+module.exports = { createNewUserAccountController, createStudentDetailsController }

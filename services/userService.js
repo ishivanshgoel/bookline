@@ -47,14 +47,15 @@ async function createStudentDetailsService(userId, studentId, name, dob) {
         throw new Error(`Name is required`);
     }
 
-    if(!(dob instanceof Date && !isNaN(dob.valueOf()))) {
-        throw new Error(`Invalid dob`);
+    let isExisitingUserId = await StudentDetail.findOne({ userId: userId }).exec();
+    if(isExisitingUserId) {
+        throw new Error(`User Id: ${userId} already registered`);
     }
-
-    let isExisiting = await UserAccount.findOne({ $or:[ { "userId": userId }, { "studentId": studentId} ]}).exec();
-    if(isExisiting) {
-        throw new Error(`User Id: ${userId} or Student Id: ${studentId} already registered`);
+    let isExisitingStudentId = await StudentDetail.findOne({ studentId: studentId }).exec();
+    if(isExisitingStudentId) {
+        throw new Error(`Student Id: ${studentId} already registered`);
     }
+    
     // #endregion validations
 
     let studentDetail = new StudentDetail({
@@ -64,7 +65,7 @@ async function createStudentDetailsService(userId, studentId, name, dob) {
         dob: dob
     });
 
-    studentDetail.save();
+    await studentDetail.save();
     return studentDetail;
 }
 

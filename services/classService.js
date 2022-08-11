@@ -104,7 +104,7 @@ async function getStudentScoreInClassForSubjectService(className, subjectName) {
     return await StudentMarks.find({
         className: className,
         subjectName: subjectName
-      }).exec();
+    }).exec();
 }
 
 module.exports = { 

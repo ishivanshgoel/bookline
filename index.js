@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const logger = require("./logger/logger");
 const PORT = process.env.PORT || 5000;
 require("dotenv").config();
+
+//#region db connection setup
 const connect = require("./config/db");
 connect();
 const db = mongoose.connection;
@@ -32,18 +34,18 @@ db.on("disconnected", () => {
   logger.log("Mongoose connection is disconnected", 2);
   isDbConnected = false;
 });
-
 process.on("SIGINT", async () => {
   await db.close();
   isDbConnected = false;
   process.exit(0);
 });
+//#endregion db connection setup
 
 // global middlewares
 app.use(cors());
 app.use(express.json());
 
-// for dev only
+// logs are for dev only
 app.use((req, res, next) => {
   if (!isDbConnected) {
     logger.log(`REJECTED INCOMING REQUEST AT ROUTE: ${req.path}`, 0);
@@ -66,10 +68,8 @@ app.use((err, req, res, next) => {
   logger.log(err.message, 0);
 
   res.send({
-    error: {
-      status: err.code || 500,
-      message: err.message,
-    },
+    message: "error",
+    detail: err.message,
   });
 });
 

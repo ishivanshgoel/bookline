@@ -3,11 +3,14 @@ const {
     createClassDetailService 
 } = require("../services/classService");
 
-async function createNewClass(req, res) {
+async function createNewClassController(req, res) {
     try{
         const { className, year, classTeacher, subjectList, students } = req.body;
         let newClassDetailResponse = await createClassDetailService(className, year, classTeacher, subjectList, students)
-        return res.json(newClassDetailResponse)
+        return res.json({
+            message: "success",
+            response: newClassDetailResponse
+        })
     } catch(err) {
         res.json({
             message: "error",
@@ -16,17 +19,20 @@ async function createNewClass(req, res) {
     }
 }
 
-async function getStudentScoreInClassForSubject(req, res) {
+async function getStudentScoreInClassForSubjectController(req, res) {
     try {
-        const { className, subjectName } = req.body;
-        let response = getStudentScoreInClassForSubjectService(className, subjectName)
-        return res.json(response)
+        const { className, subjectName } = req.query;
+        let response = await getStudentScoreInClassForSubjectService(className, subjectName)
+        return res.json({
+            message: "success",
+            response: response
+        })
     } catch(err) {
-        res.json({
+        return res.json({
             message: "error",
             detail: err.message
         })
     }
 }
 
-module.exports = { createNewClass, getStudentScoreInClassForSubject }
+module.exports = { createNewClassController, getStudentScoreInClassForSubjectController }
