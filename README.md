@@ -110,3 +110,8 @@
     ]
 }
 ```
+### .env file
+```
+ENVIRONMENT=dev
+
+DB_URI=<--mongodb DB URI -->
